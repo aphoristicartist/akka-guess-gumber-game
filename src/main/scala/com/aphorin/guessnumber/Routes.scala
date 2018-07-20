@@ -4,13 +4,14 @@ import akka.NotUsed
 import akka.actor.{ActorRef, ActorSystem, PoisonPill, Props}
 import akka.http.scaladsl.model.ws.{Message, TextMessage}
 import akka.http.scaladsl.server.Directives.{get, handleWebSocketMessages, path}
+import akka.http.scaladsl.server.Route
 import akka.stream.OverflowStrategy
 import akka.stream.scaladsl.{Flow, Sink, Source}
 
 trait Routes {
   val system: ActorSystem
 
-  def routes(gameRef: ActorRef) =
+  def routes(gameRef: ActorRef): Route =
     path("guessgame") {
       get {
         handleWebSocketMessages(playerFlow(gameRef))

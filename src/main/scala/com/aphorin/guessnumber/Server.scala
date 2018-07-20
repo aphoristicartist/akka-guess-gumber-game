@@ -9,21 +9,18 @@ import scala.util._
 
 object Server extends App with Routes {
 
-    implicit val system = ActorSystem("GameActorSystem")
-    implicit val materializer = ActorMaterializer()
-    implicit val executionContent = system.dispatcher
+  implicit val system = ActorSystem("GameActorSystem")
+  implicit val materializer = ActorMaterializer()
+  implicit val executionContext = system.dispatcher
 
-    private val game = system.actorOf(Props(new Game), "guessgame")
+  private val game = system.actorOf(Props(new Game), "guessgame")
 
-    Http().bindAndHandle(routes(game), "127.0.0.1", 8080).onComplete {
-      case Success(binding) =>
-        println(s"Server online at http://${binding.localAddress.getHostName}:${binding.localAddress.getPort}\n press Enter to kill server")
+  val bindingFuture = Http().bindAndHandle(routes(game), "localhost", 8080)
 
-      case Failure(ex) =>
-        println(s"Failed to start server, shutting down actor system. Exception is: ${ex.getCause}: ${ex.getMessage}")
-        system.terminate()
-    }
-    StdIn.readLine()
-    system.terminate()
+  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+  StdIn.readLine()
+  bindingFuture
+    .flatMap(_.unbind())
+    .onComplete(_ => system.terminate())
 
 }

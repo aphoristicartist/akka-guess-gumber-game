@@ -2,13 +2,7 @@ package com.aphorin.guessnumber
 
 import akka.actor.{Actor, ActorRef}
 
-object Player {
-
-  private[aphorin] final case class Connected(outgoing: ActorRef)
-
-  private[aphorin] final case class In(message: String)
-
-  private[aphorin] final case class Out(message: String)
+object TryParse {
 
   private[aphorin] final class StringToEither(val s: String) {
     def checked: Either[String, Int] = {
@@ -21,14 +15,14 @@ object Player {
   }
 
   implicit def stringToEither(s: String) = new StringToEither(s)
-
 }
 
 final class Player(game: ActorRef) extends Actor {
 
   import Player._
+  import TryParse._
 
-  def receive = {
+  def receive: Receive = {
     case Connected(outgoing) =>
       context.become(connected(outgoing))
       game ! Game.JoinGame
@@ -39,5 +33,15 @@ final class Player(game: ActorRef) extends Actor {
 
     case msg: Out => outgoing ! msg
   }
+
+}
+
+object Player {
+
+  private[aphorin] final case class Connected(outgoing: ActorRef)
+
+  private[aphorin] final case class In(message: String)
+
+  private[aphorin] final case class Out(message: String)
 
 }
