@@ -20,7 +20,7 @@ trait Routes {
 
   def playerFlow(gameRef: ActorRef): Flow[Message, Message, NotUsed] = {
 
-    val player = system.actorOf(Props(new Player(gameRef)))
+    val player = system.actorOf(Props(classOf[Player], gameRef))
 
     val sink: Sink[Message, NotUsed] =
       Flow[Message].map {

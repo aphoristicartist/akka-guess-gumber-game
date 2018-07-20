@@ -13,7 +13,7 @@ object Server extends App with Routes {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  private val game = system.actorOf(Props(new Game), "guessgame")
+  private val game = system.actorOf(Props[Game])
 
   val bindingFuture = Http().bindAndHandle(routes(game), "localhost", 8080)
 

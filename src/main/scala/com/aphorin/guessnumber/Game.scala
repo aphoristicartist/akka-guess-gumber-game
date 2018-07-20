@@ -7,7 +7,7 @@ final class Game extends Actor {
   import Game._
 
   private var players: Set[ActorRef] = Set.empty
-  private var randomNumber = scala.util.Random.nextInt(1000)
+  private[aphorin] var randomNumber = scala.util.Random.nextInt(1000)
 
   private def respond(ref: ActorRef, response: Response) =
     if (ref.equals(sender()))
@@ -18,8 +18,8 @@ final class Game extends Actor {
   private def separate(value: Either[String, Int]): Response = value match {
     case Right(n) => n compare randomNumber match {
       case 0 => WinResponse("You win the game! Let's play new game", "Someone win the game. Let's play new game")
-      case 1 => UsualResponse("Should be lower", "Someone trying to solve")
-      case -1 => UsualResponse("Should be greater", "Someone trying to solve")
+      case 1 => UsualResponse("Should be lower", "Someone is trying to solve")
+      case -1 => UsualResponse("Should be greater", "Someone is trying to solve")
     }
     case Left(validationMessage) => UsualResponse(validationMessage, "Someone does't understand the rules")
   }
