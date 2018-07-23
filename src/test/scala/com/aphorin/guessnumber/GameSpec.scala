@@ -21,7 +21,7 @@ class GameSpec extends TestKit(ActorSystem("GameSpecActorSystem"))
     val outgoing = TestProbe()
     val playerRef = system.actorOf(Props(classOf[Player], gameProbe.ref))
 
-    def playerJoin():Unit = {
+    def playerJoin(): Unit = {
       playerRef ! Connected(outgoing.ref)
       gameProbe.expectMsg(Game.JoinGame)
     }
@@ -59,12 +59,12 @@ class GameSpec extends TestKit(ActorSystem("GameSpecActorSystem"))
     val secondPlayerProbe = TestProbe()
     val gameRef = TestActorRef[Game]
 
-    def firstJoin():Unit = {
+    def firstJoin(): Unit = {
       playerProbe.send(gameRef, Game.JoinGame)
       playerProbe.expectMsg(Player.Out("Welcome to the game. Let's try to guess the number"))
     }
 
-    def secondJoin():Unit = {
+    def secondJoin(): Unit = {
       secondPlayerProbe.send(gameRef, Game.JoinGame)
       secondPlayerProbe.expectMsg(Player.Out("Welcome to the game. Let's try to guess the number"))
     }
